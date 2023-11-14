@@ -9,5 +9,5 @@ class Book extends Model{
     public $isbn;
     public $author;
     public $published_at;
-    public $image;
+    public $image = 'uploads\06.jpg';
 }

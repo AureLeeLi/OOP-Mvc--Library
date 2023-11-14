@@ -3,7 +3,7 @@
 <div class="max-w-5xl mx-auto px-3">
         <div class="lg:flex items-center">
             <div class="lg:w-1/2">
-                <img class="rounded-lg max-w-full mx-auto mb-12" src="<?= $image;?>" alt="<?= $title;?>">
+                <img class="rounded-lg max-w-full mx-auto mb-12" src="/<?= $image;?>" alt="<?= $title;?>">
             </div>
             <div class="lg:w-1/2">
                 <h1 class="text-center text-2xl font-bold"><?= $title;?></h1>
