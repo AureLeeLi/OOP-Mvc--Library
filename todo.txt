@@ -1,43 +1,61 @@
-# composer install et libraries update
+a ajouter dans BookController
 
-# server php -S 127.0.0.1:8000 -t public
+//insert
+    public function create()
+    {
+        //création d'un nvo livre et récup des données avant insertion
+    $book = new Book();
+    
+    //traitement du formulaire
+    //1 - recupérer les données
+    $book->title = $_POST['title'] ?? null;
+    $book->price = $_POST['price'] ?? null;
+    $book->discount = $_POST['discount'] ?? null;
+    $book->isbn = $_POST['isbn'] ?? null;
+    $book->author = $_POST['author'] ?? null;
+    $book->published_at = $_POST['published_at'] ?? null;
+    $errors =[];
 
-# modif le database : nom de la db
+    // 2 - Verification des données (si le formulaire a été envoyé)
+    if(!empty($_POST)) { //formulaire non vide
+        if(empty($book->title)) {
+            $errors['title']= 'Le titre est obligatoire.';
+        }
+        if($book->price<1 || $book->price>100) {
+            $errors['price']= 'Le prix est obligatoire et doit etre compris entre 1 et 100€.';
+        }
+        if(!empty($book->discount) && ($book->discount>100 || $book->discount<0)) {
+            $errors['discount']= 'La promotion doit etre comprise entre 0 et 100%.';
+        }
+        if(strlen($book->isbn) !=13 && strlen($book->isbn) !=10) {
+            $errors['isbn']= 'L\'ISBN est invalide, il doit contenir 10 ou 13 chiffres.';
+        }
+        if(empty($book->author)) {
+            $errors['author']= 'Veuillez entrer le nom de l\'auteur.';
+        }
+         //verif format date // $published_at = "2023-11-06"
+        $checked = explode('-', $book->published_at); 
+        // [2023,11,06]
+        //(int) permet de caster une chaine en entier
+        if(!checkdate($checked[1] ?? 0, $checked[2] ?? 0, (int)$checked[0])) { 
+            $errors['published_at'] = 'La date est invalide.';
+        }
+        
+        if(empty($errors)){ //verif si le tableau d'erreurs contient qqch, si il est vide on fait la requête.
 
-# sur la View : voir pour la méthode de redirection ($url)
+            //fonction insert dans Model avec noms des colonnes de la bdd
+            $book->save(['title','price', 'discount', 'isbn', 'author', 'published_at','image']);
 
-# controller 
-    -> BookController voir (UserController)
-
-
-#model
--> méthodes à definir sur le Model , sur le Model Book extends Model
-    all (class Book methode list)
-    show
-    create
-    update
-    delete
-
-#=> Model Book extends Model
-    propriétés id, title, price, discount, isbn, author, published_at, image
+            //redirection
+        }
+    }
+    
+        return View::render('create', [
+            'errors' => $errors,
+            'book' => $book,
+        ]);
+        //message "le livre a bien été ajouté" ou redirection
+    }
 
 
-#views (maquettes de l'ancien tp)
-partials header et footer, + :
-
-    ->books.html.php [route : ['GET', '/books', 'BookController@list'],]
-    localhost:8000/books
-
-    ->book.html.php (livre cliqué) : ['GET', '/book/[i:id]', 'BookController@show'],//recherche par id -> i = integer;
-    ex : localhost:8000/book/1
-
-    ->create.html.php (insertion de livre) : ['GET|POST', '/book/creer', 'BookController@create'],
-
-    ->delete.html.php (suppression de livre) : 
-    ['GET', '/book/[i:id]/delete', 'BookController@delete'],
-    ex : localhost:8000/book/1/delete
-
-    ->editBook.html.php (update sql) : ['GET', '/book/[i:id]/edit', 'BookController@edit'],
-    ex : localhost:8000/book/1/edit
-
-    ->404.html.php idem
+    #créer une vue create.html.php avec le formulaire des maquettes

@@ -62,26 +62,22 @@ class Model
         return $query->execute($values);
     }
 
-    //delete
-    // public static function destroy($id)
-    // {
-    //     $table = static::getTable();
-    //     //faire la requête
-    //     $sql = "DELETE FROM $table WHERE id = :id";
-    //     $query= Database::get()->prepare($sql);
-    //     return $query->execute(['id' => ($id)]);
-    // }
+    //edit
+    public function update($fields) //$fields => colonnes de la table en bdd
+    {
+        $table = $this->getTable(); //$table = static::getTable();
+        $columns = implode(', ', $fields); //['name','age'] => name, age;
+        $values = [];
+        foreach ($fields as $field){ //tous les champs dans save => values = [':name' => 'charlie', ':age' => 6 ]
+            $values[':'.$field] = $this->$field;
+        }
+        $parameters = implode(', ', array_keys($values)); //[':name', ':age']
 
-    //update -> edit
-    // public static function update()
-    // {
-    //     $table = $this->getTable(); //$table = static::getTable();
-        
-    //     $sql = "UPDATE $table SET $columns = $parameters WHERE id = :id";
-       
-    //     $query= Database::get()->prepare($sql);
-    //     return $query->execute();
-    // }
+        $sql = "UPDATE $table SET $parameters = $values WHERE id = :id";
+        $query= Database::get()->prepare($sql);
+        return $query->execute($values);
+    }
+    
 }
 
 
