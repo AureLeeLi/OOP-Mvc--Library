@@ -4,36 +4,37 @@
 
     <?php if(!empty($errors)) { ?>
         <div class="bg-red-300 p-5 rounded border border-red-800 text-red-800 my-4">
-             <!-- tableau d'erreurs -->
-            <?php foreach ($errors as $error){?>
-                <p><?= $error;?></p>
-            <?php }?>
+            <!-- afffichage des messages erreur s'il y a. -->
+            <?php foreach($errors as $error){?>
+            <p class="text-lg text-red text-center mt-12 underline"><?= $error; ?></p>
+            <?php } ?>
         </div>
         <?php }?>
+        
         <form action="" method="post" class="w-1/2 mx-auto" enctype="multipart/form-data">
             <div class="mb-4">
                 <label for="title" class="block">Titre *</label>
-                <input type="text" name="title" id="title" class="border-0 border-b focus:ring-0 w-full" value="">
+                <input type="text" name="title" id="title" class="border-0 border-b focus:ring-0 w-full" value="<?= $title;?>">
             </div>
             <div class="mb-4">
                 <label for="price" class="block">Prix *</label>
-                <input type="text" name="price" id="price" class="border-0 border-b focus:ring-0 w-full" value="">
+                <input type="text" name="price" id="price" class="border-0 border-b focus:ring-0 w-full" value="<?= $price;?>">
             </div>
             <div class="mb-4">
                 <label for="discount" class="block">Promotion</label>
-                <input type="text" name="discount" id="discount" class="border-0 border-b focus:ring-0 w-full" value="">
+                <input type="text" name="discount" id="discount" class="border-0 border-b focus:ring-0 w-full" value="<?= $discount;?>">
             </div>
             <div class="mb-4">
                 <label for="isbn" class="block">ISBN *</label>
-                <input type="text" name="isbn" id="isbn" class="border-0 border-b focus:ring-0 w-full" value="">
+                <input type="text" name="isbn" id="isbn" class="border-0 border-b focus:ring-0 w-full" value="<?= $isbn;?>">
             </div>
             <div class="mb-4">
                 <label for="author" class="block">Auteur *</label>
-                <input type="text" name="author" id="author" class="border-0 border-b focus:ring-0 w-full" value="">
+                <input type="text" name="author" id="author" class="border-0 border-b focus:ring-0 w-full" value="<?= $author;?>">
             </div>
             <div class="mb-4">
                 <label for="published_at" class="block">Publié le *</label>
-                <input type="date" name="published_at" id="published_at" class="border-0 border-b focus:ring-0 w-full" value="">
+                <input type="date" name="published_at" id="published_at" class="border-0 border-b focus:ring-0 w-full" value="<?= $published_at;?>">
             </div>
             <div class="mb-4">
                 <label for="image" class="block mb-2">Image *</label>
@@ -43,8 +44,9 @@
                     file:font-semibold file:py-2 file:px-4 file:mr-4
                 ">
             </div>
+
             <div class="text-center">
-                <button class="bg-gray-900 px-4 py-2 text-white inline-block rounded hover:bg-gray-700 duration-200">Créer</button>
+                <button class="bg-gray-900 px-4 py-2 text-white inline-block rounded hover:bg-gray-700 duration-200">Valider les modifications</button>
             </div>
         </form>
     </div>

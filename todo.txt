@@ -2,37 +2,38 @@
 
 # server php -S 127.0.0.1:8000 -t public
 
-# modif le database : nom de la db et namespace a redéfinir
+# modif le database : nom de la db
 
-# modif le namespace de la View et voir pour la méthode de redirection ($url)
-
-# namespace M2i\BookMvc\ ?
+# sur la View : voir pour la méthode de redirection ($url)
 
 # controller 
-    -> BookController voir UserController
-        -> méthodes à definir
-         all (class Book methode list)
-         show
-         create
-         update
-         delete
+    -> BookController voir (UserController)
 
-#=> Model -> Book extends Model
+
+#model
+-> méthodes à definir sur le Model , sur le Model Book extends Model
+    all (class Book methode list)
+    show
+    create
+    update
+    delete
+
+#=> Model Book extends Model
     propriétés id, title, price, discount, isbn, author, published_at, image
 
 
-#views
+#views (maquettes de l'ancien tp)
 partials header et footer, + :
 
-    ->allBooks.html.php [route : ['GET', '/livres', 'BookController@list'],]
-    localhost:8000/livres
+    ->books.html.php [route : ['GET', '/books', 'BookController@list'],]
+    localhost:8000/books
 
-    ->showBook.html.php (livre cliqué) : ['GET', '/livres/[i:id]', 'BookController@show'],//recherche par id -> i = integer;
-    ex : localhost:8000/livre/1
+    ->book.html.php (livre cliqué) : ['GET', '/book/[i:id]', 'BookController@show'],//recherche par id -> i = integer;
+    ex : localhost:8000/book/1
 
-    ->createBook.html.php (insertion de livre) : ['GET|POST', '/book/creer', 'BookController@create'],
+    ->create.html.php (insertion de livre) : ['GET|POST', '/book/creer', 'BookController@create'],
 
-    ->deleteBook.html.php (suppression de livre) : 
+    ->delete.html.php (suppression de livre) : 
     ['GET', '/book/[i:id]/delete', 'BookController@delete'],
     ex : localhost:8000/book/1/delete
 

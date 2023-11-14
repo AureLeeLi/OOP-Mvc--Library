@@ -30,6 +30,9 @@ class Model
         return $query->fetchAll();
     }
 
+    //$query->setFetchMode(\PDO::FETCH_CLASS, static::class);
+    //recup un tableau d'objets au lieu d'un tableau de tableau
+
     //renvoie les détails où l'id a été choisi
     public static function find($id)
     {
@@ -57,6 +60,22 @@ class Model
         $sql = "INSERT INTO $table ($columns) VALUES ($parameters)";
         $query= Database::get()->prepare($sql);
         return $query->execute($values);
+    }
+
+    //destroy
+    public static function destroy($id)
+    {
+        $table = static::getTable();
+        $sql = "DELETE FROM books WHERE id = :id";
+        $query= Database::get()->prepare($sql);
+        return $query->execute(['id' => $id]);
+        //faire la requête
+
+    }
+
+    public static function update($id)
+    {
+    
     }
 }
 

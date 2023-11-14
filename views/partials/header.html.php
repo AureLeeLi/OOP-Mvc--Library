@@ -1,23 +1,26 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $title ?? 'MVC'; ?></title>
+    <title>Quae dolor itaque natus reiciendis ad quae. - Book PHP</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap">
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
 </head>
-<body>
-
-<div class="bg-gray-800 p-4 mx-auto shadow-lg">
-    <div class="max-w-5xl mx-auto">
-        <div class="flex justify-between items-center text-gray-200 font-bold">
-            <h1 class="text-3xl">
-                <a href="/">MVC</a>
-            </h1>
-            <nav class="space-x-4">
-                <a href="/utilisateurs">Utilisateurs</a>
-                <a href="/films">Films</a>
-            </nav>
+<body class="font-[Ubuntu]">
+    <div class="max-w-5xl mx-auto px-3 mb-8">
+        <div class="flex justify-between items-center py-6 border-b">
+            <h2 class="text-3xl">
+                <a href="/">Books POO-MVC</a>
+            </h2>
+            <ul>
+                <li>
+                    <a class="px-4" href="/">Accueil</a>
+                    <a class="px-4" href="/books">Livres</a>
+                    <a class="px-4" href="/cart">Panier (0)</a>
+                    <a class="px-4" href="/login">Connexion</a>
+                    <a class="px-4" href="/a-propos">A propos</a>
+                </li>
+            </ul>
         </div>
     </div>
-</div>
