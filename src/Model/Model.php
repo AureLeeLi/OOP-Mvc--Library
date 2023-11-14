@@ -62,20 +62,20 @@ class Model
         return $query->execute($values);
     }
 
-    //destroy
+    //delete
     public static function destroy($id)
     {
         $table = static::getTable();
-        $sql = "DELETE FROM books WHERE id = :id";
-        $query= Database::get()->prepare($sql);
-        return $query->execute(['id' => $id]);
         //faire la requête
-
+        $sql = "DELETE FROM $table WHERE id = :id";
+        $query= Database::get()->prepare($sql);
+        return $query->execute(['id' => ($id)]);
     }
 
+    //update -> edit
     public static function update($id)
     {
-    
+        //requête update
     }
 }
 

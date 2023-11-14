@@ -46,7 +46,7 @@ class BookController {
     
     //traitement du formulaire
     //1 - recupérer les données
-    $title = $_POST['title'] ?? null;
+    $title = $_POST['title'] ?? $book;
     $price = $_POST['price'] ?? null;
     $discount = $_POST['discount'] ?? null;
     $isbn = $_POST['isbn'] ?? null;
@@ -97,7 +97,19 @@ class BookController {
     //delete
     public function delete($id)
     {
-    
+        //retrouve l'id du book à supprimer
+        $book = (Book::find($id));
+
+        //si book =  not find -> renvoie une 404.
+        if(! $book){ 
+            http_response_code(404);
+            return View::render('404');
+        }
+        else {
+            //fonction destroy dans Model
+            $book->destroy($id);
+            //redirection
+        }
     }
 
     //edit 
@@ -143,9 +155,9 @@ class BookController {
             if(empty($errors)){ //verif si le tableau d'erreurs contient qqch, si il est vide on fait la requête.
 
                 //fonction insert dans Model
-                $book->save(['title','price', 'discount', 'isbn', 'author', 'published_at','image']);
+                $book->save(['id','title','price', 'discount', 'isbn', 'author', 'published_at','image']);
 
-                //redirection
+                //redirection vers /books avec message "le livre a bien été modifié"
             }
         }
         
