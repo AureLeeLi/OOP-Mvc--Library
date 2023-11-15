@@ -47,7 +47,8 @@ class Model
     }
 
     //insert
-    public function save($fields) //$fields => colonnes de la table en bdd
+    public function save($fields) 
+    //$fields => colonnes de la table en bdd
     {
         $table = $this->getTable(); //$table = static::getTable();
         $columns = implode(', ', $fields); //['name','age'] => name, age;
@@ -63,7 +64,8 @@ class Model
     }
 
     //edit
-    public function update($fields) //$fields => colonnes de la table en bdd
+    public function update($fields) 
+    //$fields => colonnes de la table en bdd
     {
         $table = $this->getTable(); //$table = static::getTable();
         $columns = implode(', ', $fields); //['name','age'] => name, age;
@@ -73,12 +75,11 @@ class Model
         }
         $parameters = implode(', ', array_keys($values)); //[':name', ':age']
 
-        $sql = "UPDATE $table SET $parameters = $values WHERE id = :id";
+        $sql = "UPDATE $table SET $columns = $parameters WHERE id = :id";
         $query= Database::get()->prepare($sql);
         return $query->execute($values);
     }
     
 }
-
 
 ?>
