@@ -63,23 +63,24 @@ class Model
         return $query->execute($values);
     }
 
-    //edit
-    public function update($fields) 
-    //$fields => colonnes de la table en bdd
-    {
-        $table = $this->getTable(); //$table = static::getTable();
-        $columns = implode(', ', $fields); //['name','age'] => name, age;
-        $values = [];
-        foreach ($fields as $field){ //tous les champs dans save => values = [':name' => 'charlie', ':age' => 6 ]
-            $values[':'.$field] = $this->$field;
-        }
-        $parameters = implode(', ', array_keys($values)); //[':name', ':age']
+    // edit
+    // public function update($fields) 
+    // //$fields => colonnes de la table en bdd
+    // {
 
-        $sql = "UPDATE $table SET $columns = $parameters WHERE id = :id";
-        $query= Database::get()->prepare($sql);
-        return $query->execute($values);
-    }
-    
+    //     $table = $this->getTable(); //$table = static::getTable();
+    //     $columns = implode(', ', $fields); //['name','age'] => name, age;
+    //     $values = [];
+    //     foreach ($fields as $field){ //tous les champs dans save => values = [':name' => 'charlie', ':age' => 6 ]
+    //         $values[':'.$field] = $this->$field;
+    //     }
+    //     $parameters = implode(', ', array_keys($values)); //[':name', ':age']
+
+    //     $sql = "UPDATE $table SET $columns = $parameters WHERE id = :id";
+    //     $query= Database::get()->prepare($sql);
+    //     return $query->execute($values);
+    // }
+
 }
 
 ?>

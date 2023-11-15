@@ -17,7 +17,6 @@ class BookController {
         ]);
     }
 
-    
     //affichage d'un livre cliqué (grâce à l'id en get)
     public function show($id)
     {
@@ -83,10 +82,11 @@ class BookController {
         
         if(empty($errors)){ //verif si le tableau d'erreurs contient qqch, si il est vide on fait la requête.
 
-            //fonction insert dans Model avec noms des colonnes de la bdd
+            //fonction insert/save dans Model avec noms des colonnes de la bdd
             $book->save(['title','price', 'discount', 'isbn', 'author', 'published_at','image']);
 
             header('Location:/books');
+            //message le livre a bien été créé
         }
     }
     
@@ -99,14 +99,17 @@ class BookController {
     // delete
     public function delete($id)
     {
-        $query = Database::get()->prepare('DELETE FROM books WHERE id = :id');
-        $query->execute(['id' => ($id)]);
+        // $book = (Book::find($id));
+        // $table = $this->getTable(); //$table = static::getTable();
+        $query = Database::get()->prepare('DELETE FROM books WHERE id = :id'); //$table à la place de books
+        $query->execute(['id' => ($id),]);
 
         header('Location:/books');
+        //message le livre a bien été supprimé
 
     }
 
-    //edit 
+    //update
     public function edit($id)
     {
         $book = (Book::find($id));
@@ -148,10 +151,11 @@ class BookController {
             
             if(empty($errors)){ //verif si le tableau d'erreurs contient qqch, si il est vide on fait la requête.
 
-                //fonction update dans Model
+                //fonction save/insert dans Model
                 $book->update(['title','price', 'discount', 'isbn', 'author', 'published_at','image']);
 
-                // header('Location:/books');
+                header('Location:/books');
+                //message le livre a bien été modifié
             }
         }
         
