@@ -10,7 +10,8 @@
             <?php }?>
         </div>
         <?php }?>
-        <form action="" method="post" class="w-1/2 mx-auto" enctype="multipart/form-data">
+        <form action="" method="post" class="w-1/2 mx-auto" enctype="multipart/form-data"> 
+                                                            <!-- enctype pour uploader un fichier -->
             <div class="mb-4">
                 <label for="title" class="block">Titre *</label>
                 <input type="text" name="title" id="title" class="border-0 border-b focus:ring-0 w-full" value="">

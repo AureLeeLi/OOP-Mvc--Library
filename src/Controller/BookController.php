@@ -53,6 +53,7 @@ class BookController {
     $book->isbn = $_POST['isbn'] ?? null;
     $book->author = $_POST['author'] ?? null;
     $book->published_at = $_POST['published_at'] ?? null;
+    //$book->image = $_FILES['image] ?? null; recup du fichier uploadé
     $errors =[];
 
     // 2 - Verification des données (si le formulaire a été envoyé)
@@ -60,12 +61,14 @@ class BookController {
         if(empty($book->title)) {
             $errors['title']= 'Le titre est obligatoire.';
         }
+        //if(!($book->price >1 && $book->price < 100))
         if($book->price<1 || $book->price>100) {
             $errors['price']= 'Le prix est obligatoire et doit etre compris entre 1 et 100€.';
         }
         if(!empty($book->discount) && ($book->discount>100 || $book->discount<0)) {
             $errors['discount']= 'La promotion doit etre comprise entre 0 et 100%.';
         }
+        // if (! in_array(strlen($book->iqbn), [10,13])) // si la taille de l'isbn ne correspond pas à 10 ou 13;
         if(strlen($book->isbn) !=13 && strlen($book->isbn) !=10) {
             $errors['isbn']= 'L\'ISBN est invalide, il doit contenir 10 ou 13 chiffres.';
         }
@@ -79,6 +82,11 @@ class BookController {
         if(!checkdate($checked[1] ?? 0, $checked[2] ?? 0, (int)$checked[0])) { 
             $errors['published_at'] = 'La date est invalide.';
         }
+
+        //verif des fichiers uploadés
+        //verif type (jpg, jpeg, gif, png)
+        //verif taille
+        //!! faille secu
         
         if(empty($errors)){ //verif si le tableau d'erreurs contient qqch, si il est vide on fait la requête.
 
@@ -96,7 +104,7 @@ class BookController {
         ]);
     }
 
-    // delete
+    // delete à mettre dans le model pour la requête
     public function delete($id)
     {
         // $book = (Book::find($id));

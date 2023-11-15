@@ -74,12 +74,17 @@ class Model
     //     foreach ($fields as $field){ //tous les champs dans save => values = [':name' => 'charlie', ':age' => 6 ]
     //         $values[':'.$field] = $this->$field;
     //     }
-    //     $parameters = implode(', ', array_keys($values)); //[':name', ':age']
+    //     $parameters = implode(', ', array_map(function($fields)
+            //{
+                // return "$fields= :$field";
+            //}, array_keys($values))); //[':name', ':age']
 
     //     $sql = "UPDATE $table SET $columns = $parameters WHERE id = :id";
     //     $query= Database::get()->prepare($sql);
     //     return $query->execute($values);
     // }
+
+    //function delete
 
 }
 
