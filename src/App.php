@@ -8,6 +8,15 @@ class App extends AltoRouter
 {
     public function run()
     {
+        // On peut démarrer les sessions en même temps que l'app
+        session_start();
+
+        if (! isset($_SESSION['user']) && isset($_COOKIE['REMEMBER'])) {
+            if ($user = User::findToken($_COOKIE['REMEMBER'])) {
+                $_SESSION['user'] = $user;
+            }
+        }
+        
         //Permet de styliser les erreurs
         $whoops = new \Whoops\Run;
         $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);

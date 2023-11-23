@@ -12,6 +12,7 @@ $app->addRoutes([
     //méthode POST ou GET, qdon va sur users, utilise cette methode list (@marqueur qui fait la diff entre la class et la méthode, utile pour le explode)
         //[Méthode POST OU GET, url, controller@methode]
         ['GET', '/', 'HomeController@index'],
+        
         ['GET', '/books', 'BookController@list'],
         ['GET', '/book/[i:id]', 'BookController@show'],
         //livre cliqué

@@ -10,32 +10,62 @@ class Book extends Model{
     public $isbn;
     public $author;
     public $published_at;
-    public $image = 'uploads\06.jpg';
+    public $image;
 
 
-    public function price($price, $discount = 0)
+    /**
+     * Détermine si le livre est en promotion.
+     */
+    public function hasDiscount()
     {
-        $taxPrice = $price * (1+ 20/100) * (1 - $discount/100); //45.6
-        $taxPrice = number_format($taxPrice, 2, ',', ' '); //1450.6 devient 1 450,60
+        return $this->discount > 0;
+    }
+
+    /**
+     * Permet de calculer un prix TTC.
+     */
+    public function price($withDiscount = false) {
+        $percentage = $withDiscount ? $this->discount : 0;
+        $taxPrice = $this->price * (1 + 20 / 100) * (1 - $percentage / 100); // 45.6
+        $taxPrice = number_format($taxPrice, 2, ',', ' '); // 1450.6 devient 1 450,60
+
         return $taxPrice;
     }
 
-    public function isbn($isbn)
+    /**
+     * Permet de formater une date US en années.
+     */
+    public function year()
     {
-        $result = substr($isbn, 0, 1); // 8
-
-    if(strlen($isbn)===13){
-        $result = $result.'-'.substr($isbn, 1, 6); //8-248827
-        $result = $result.'-'.substr($isbn, 7, 6); //8-248827-583739
-        return $result = $isbn;
+        return $this->date('Y');
     }
-    else{
-        $result = $result.'-'.substr($isbn, 1, 4); //8-2488
-        $result = $result.'-'.substr($isbn, 5, 4); //8-2488-2758
-        $result = $result.'-'.substr($isbn, 9, 10); //8-2488-2758
-        
-        return $result = $isbn;
-    }
-}
 
+    /**
+     * Permet de formater une date US en ce qu'on veut.
+     */
+    public function date($format = 'd/m/Y')
+    {
+        return date($format, strtotime($this->published_at));
+    }
+
+    /**
+     * Permet de formater un ISBN.
+     * 8248827583739 => 8-248827-583739
+     * 8248827583    => 8-2488-2758-3
+     */
+    public function isbn()
+    {
+        $result = substr($this->isbn, 0, 1); // 8
+
+        $size = strlen($this->isbn); // 10 ou 13
+        $offset = ceil($size / 2);
+        $result .= '-'.substr($this->isbn, 1, $offset - 1); // 8-248827
+        $result .= '-'.substr($this->isbn, $offset, $offset - 1); // 8-248827-583739
+
+        if ($size == 10) {
+            $result .= '-'.substr($this->isbn, -1); // 8-2488-2758-3
+        }
+
+        return $result;
+    }
 }

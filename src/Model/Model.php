@@ -7,6 +7,8 @@ use M2i\Mvc\Database;
 
 class Model
 {
+    public $id;
+
      //renvoie  le nom de la table
     public static function getTable()
     {
@@ -27,11 +29,11 @@ class Model
 
         $sql = "SELECT * FROM $table";
         $query = Database::get()->query($sql);
+        // Permet de récupérer un tableau d'objets au lieu d'un
+        // tableau de tableaux
+        $query->setFetchMode(\PDO::FETCH_CLASS, static::class);
         return $query->fetchAll();
     }
-
-    //$query->setFetchMode(\PDO::FETCH_CLASS, static::class);
-    //recup un tableau d'objets au lieu d'un tableau de tableau
 
     //renvoie les détails où l'id a été choisi
     public static function find($id)
@@ -42,7 +44,9 @@ class Model
         $sql = "SELECT * FROM $table WHERE id = :id";
         $query = Database::get()->prepare($sql);
         $query->execute(['id'=>$id]);
-
+        // Permet de récupérer un tableau d'objets au lieu d'un
+        // tableau de tableaux
+        $query->setFetchMode(\PDO::FETCH_CLASS, static::class);
         return $query->fetch();
     }
 
@@ -63,28 +67,39 @@ class Model
         return $query->execute($values);
     }
 
-    // edit
-    // public function update($fields) 
-    // //$fields => colonnes de la table en bdd
-    // {
+    public function update($fields)
+    {
+        $table = static::getTable();
 
-    //     $table = $this->getTable(); //$table = static::getTable();
-    //     $columns = implode(', ', $fields); //['name','age'] => name, age;
-    //     $values = [];
-    //     foreach ($fields as $field){ //tous les champs dans save => values = [':name' => 'charlie', ':age' => 6 ]
-    //         $values[':'.$field] = $this->$field;
-    //     }
-    //     $parameters = implode(', ', array_map(function($fields)
-            //{
-                // return "$fields= :$field";
-            //}, array_keys($values))); //[':name', ':age']
+        $values = [];
 
-    //     $sql = "UPDATE $table SET $columns = $parameters WHERE id = :id";
-    //     $query= Database::get()->prepare($sql);
-    //     return $query->execute($values);
-    // }
+        foreach ($fields as $field) {
+            $values[$field] = htmlspecialchars($this->$field);
+        }
 
-    //function delete
+        // ['name' => 'Fiorella', 'age' => 3]
+        $parameters = implode(', ', array_map(function ($field) {
+            return "$field = :$field";
+        }, array_keys($values))); // name = :name, age = :age
+
+        $sql = "UPDATE $table SET $parameters WHERE id = :id";
+        $query = Database::get()->prepare($sql);
+
+        return $query->execute([
+            'id' => $this->id,
+            ...$values
+        ]);
+    }
+
+    public static function delete($id)
+    {
+        $table = static::getTable();
+
+        $sql = "DELETE FROM $table WHERE id = :id";
+        $query = Database::get()->prepare($sql);
+
+        return $query->execute(['id' => $id]);
+    }
 
 }
 

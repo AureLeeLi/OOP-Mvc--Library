@@ -28,15 +28,8 @@ class BookController {
         }
         //vue de l'affichage du livre
         return View::render('book', [
-            'title' => $book['title'],
-            'price' => $book['price'],
-            'discount' => $book['discount'],
-            'isbn' => $book['isbn'],
-            'author' => $book['author'],
-            'published_at' => $book['published_at'],
-            'image' => $book['image'],
+            'book' => $book,
         ]);
-        //fonction price et isbn ici ??
     }
 
     //insert
@@ -53,7 +46,8 @@ class BookController {
     $book->isbn = $_POST['isbn'] ?? null;
     $book->author = $_POST['author'] ?? null;
     $book->published_at = $_POST['published_at'] ?? null;
-    //$book->image = $_FILES['image] ?? null; recup du fichier uploadé
+    //recup du fichier uploadé
+    $book->image = $_FILES['image'] ?? null;
     $errors =[];
 
     // 2 - Verification des données (si le formulaire a été envoyé)
@@ -83,13 +77,47 @@ class BookController {
             $errors['published_at'] = 'La date est invalide.';
         }
 
-        //verif des fichiers uploadés
-        //verif type (jpg, jpeg, gif, png)
-        //verif taille
-        //!! faille secu
-        
-        if(empty($errors)){ //verif si le tableau d'erreurs contient qqch, si il est vide on fait la requête.
+        // Là je définis tous les types que j'autorise en upload
+        $mimeTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'];
 
+        if ($book->image['error'] != 0) {
+            $errors['image'] = 'L\'image est invalide.';
+        } else {
+            // On vérifie le type du fichier
+            $mime = mime_content_type($book->image['tmp_name']);
+
+            if (!in_array($mime, $mimeTypes)) {
+                $errors['image'] = 'L\'image est invalide.';
+            }
+
+            // On vérifie la taille du fichier
+            if ($book->image['size'] > 5 * 1024 * 1024) {
+                $errors['image'] = 'Le fichier est trop lourd (5 Mo).';
+            }
+        }
+
+        if (empty($errors)) {
+            // Ici on fait l'upload
+            $folder = __DIR__.'/../../public/uploads';
+
+            if (!is_dir($folder)) { // Si le dossier n'existe pas, on le créé
+                mkdir($folder);
+            }
+
+            // Permet de générer un nom aléatoire pour le fichier
+            // Fiorella-1234 devient 91ca106ff0e1537a4c266ca1626c71ba
+            $name = md5($book->title.'-'.uniqid());
+            $extension = substr(strrchr($book->image['name'], '.'), 1); // jpg
+            // 91ca106ff0e1537a4c266ca1626c71ba.jpg
+            $filename = $name.'.'.$extension;
+
+            // Upload du fichier
+            move_uploaded_file($book->image['tmp_name'], $folder.'/'.$filename);
+
+            // Pour envoyer dans la BDD
+            $book->image = 'uploads/'.$filename;
+        
+       
             //fonction insert/save dans Model avec noms des colonnes de la bdd
             $book->save(['title','price', 'discount', 'isbn', 'author', 'published_at','image']);
 
@@ -107,10 +135,10 @@ class BookController {
     // delete à mettre dans le model pour la requête
     public function delete($id)
     {
-        // $book = (Book::find($id));
-        // $table = $this->getTable(); //$table = static::getTable();
-        $query = Database::get()->prepare('DELETE FROM books WHERE id = :id'); //$table à la place de books
-        $query->execute(['id' => ($id),]);
+        $folder = __DIR__.'/../../public';
+        @unlink($folder.'/'.Book::find($id)->image);
+
+        Book::delete($id);
 
         header('Location:/books');
         //message le livre a bien été supprimé
@@ -121,19 +149,27 @@ class BookController {
     public function edit($id)
     {
         $book = (Book::find($id));
-        
-        //traitement du formulaire
-        //1 - recupérer les données
-        $title = $_POST['title'] ?? null;
-        $price = $_POST['price'] ?? null;
-        $discount = $_POST['discount'] ?? null;
-        $isbn = $_POST['isbn'] ?? null;
-        $author = $_POST['author'] ?? null;
-        $published_at = $_POST['published_at'] ?? null;
-        $errors =[];
 
+        if (! $book) {
+            return View::notFound();
+        }
+        
+        $errors =[];
+        
         // 2 - Verification des données (si le formulaire a été envoyé)
-        if(!empty($_POST)) { //formulaire non vide
+        if(!empty($_POST)) { 
+            //formulaire non vide
+            //traitement du formulaire
+            //1 - recupérer les données
+            $book->title = $_POST['title'] ?? null;
+            $book->price = $_POST['price'] ?? null;
+            $book->discount = $_POST['discount'] ?? null;
+            $book->isbn = $_POST['isbn'] ?? null;
+            $book->author = $_POST['author'] ?? null;
+            $book->published_at = $_POST['published_at'] ?? null;
+            $currentImage = $book->image;
+            $book->image = $_FILES['image'] ?? null;
+            
             if(empty($title)) {
                 $errors['title']= 'Le titre est obligatoire.';
             }
@@ -156,9 +192,46 @@ class BookController {
             if(!checkdate($checked[1] ?? 0, $checked[2] ?? 0, (int)$checked[0])) { 
                 $errors['published_at'] = 'La date est invalide.';
             }
-            
+
+            $mimeTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'];
+            if (! empty($book->image['tmp_name'])) { // Seulement si fichier upload
+                $mime = mime_content_type($book->image['tmp_name']);
+
+                if (!in_array($mime, $mimeTypes)) {
+                    $errors['image'] = 'L\'image est invalide.';
+                }
+
+                if ($book->image['size'] > 5 * 1024 * 1024) {
+                    $errors['image'] = 'Le fichier est trop lourd (5 Mo).';
+                }
+            }
+
             if(empty($errors)){ //verif si le tableau d'erreurs contient qqch, si il est vide on fait la requête.
 
+                if (! empty($book->image['tmp_name'])) { // Seulement si fichier upload
+                    $folder = __DIR__.'/../../public/uploads';
+
+                    if (!is_dir($folder)) { // Si le dossier n'existe pas, on le créé
+                        mkdir($folder);
+                    }
+
+                    if ($currentImage) { // On supprime l'ancienne image
+                        @unlink($folder.'/'.str_replace('uploads/', '', $currentImage));
+                    }
+
+                    // Fiorella-1234 devient 91ca106ff0e1537a4c266ca1626c71ba
+                    $name = md5($book->title.'-'.uniqid());
+                    $extension = substr(strrchr($book->image['name'], '.'), 1); // jpg
+                    // 91ca106ff0e1537a4c266ca1626c71ba.jpg
+                    $filename = $name.'.'.$extension;
+
+                    // Upload du fichier
+                    move_uploaded_file($book->image['tmp_name'], $folder.'/'.$filename);
+
+                    $book->image = 'uploads/'.$filename;
+                } else {
+                    $book->image = $currentImage; // Pour éviter d'écraser l'image actuelle
+                }
                 //fonction save/insert dans Model
                 $book->update(['title','price', 'discount', 'isbn', 'author', 'published_at','image']);
 

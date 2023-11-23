@@ -24,11 +24,16 @@ class View
         require '../views/'.$view.'.html.php';
     }
 
-    //fonction redirect
-    public static function redirect($url)
-    //page vers laquelle on sera redirigée
+    public static function notFound()
     {
+        http_response_code(404);
 
+        return View::render('404');
+    }
+
+    public static function redirect($route)
+    {
+        header("Location: $route");
     }
 
 }

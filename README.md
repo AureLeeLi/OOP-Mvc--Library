@@ -123,5 +123,3 @@ $app->addRoutes([
     ['GET', '/utilisateurs/supprimer/[i:id]', 'UserController@destroy'],
 ]);
 ```
-
-Soyez très attentifs à ce que vous avez écrit, tout doit bien correspondre. Cette petite doc' est basée sur du code qui fonctionne donc il n'y a pas de raisons de ne pas pouvoir le reproduire pour vos propres éléments.
