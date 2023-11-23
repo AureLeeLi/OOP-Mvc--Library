@@ -50,9 +50,9 @@
                             <div class="p-4">
                                 <h2 class="text-center"><?= $book->title;?></h2>
                                 <div class="flex justify-around items-center">
-                                <p class="text-lg font-bold"><?= $book->price, $book->discount;?> €</p>
+                                <p class="text-lg font-bold"><?= $book->price(true);?> €</p>
                                 <?php 
-                                if ($book->hasDiscount()> 0){?>
+                                if ($book->hasDiscount()){?>
                                 <p class="text-xs font-bold">-<?= $book->discount;?>% <span class="line-through"><?= $book->price;?>€</span></p>
                                 <?php }?>
                                 </div>

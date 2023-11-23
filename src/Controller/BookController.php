@@ -170,23 +170,23 @@ class BookController {
             $currentImage = $book->image;
             $book->image = $_FILES['image'] ?? null;
             
-            if(empty($title)) {
+            if(empty($book->title)) {
                 $errors['title']= 'Le titre est obligatoire.';
             }
-            if($price<1 || $price>100) {
+            if($book->price<1 || $book->price>100) {
                 $errors['price']= 'Le prix est obligatoire et doit etre compris entre 1 et 100€.';
             }
-            if(!empty($discount) && ($discount>100 || $discount<0)) {
+            if(!empty($book->discount) && ($book->discount>100 || $book->discount<0)) {
                 $errors['discount']= 'La promotion doit etre comprise entre 0 et 100%.';
             }
-            if(strlen($isbn) !=13 && strlen($isbn) !=10) {
+            if(strlen($book->isbn) !=13 && strlen($book->isbn) !=10) {
                 $errors['isbn']= 'L\'ISBN est invalide, il doit contenir 10 ou 13 chiffres.';
             }
-            if(empty($author)) {
+            if(empty($book->author)) {
                 $errors['author']= 'Veuillez entrer le nom de l\'auteur.';
             }
             //verif format date // $published_at = "2023-11-06"
-            $checked = explode('-', $published_at); 
+            $checked = explode('-', $book->published_at); 
             // [2023,11,06]
             //(int) permet de caster une chaine en entier
             if(!checkdate($checked[1] ?? 0, $checked[2] ?? 0, (int)$checked[0])) { 
